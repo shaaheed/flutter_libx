@@ -12,7 +12,7 @@ abstract class AbstractPage {
 
   Widget getScaffold(BuildContext context);
 
-  Widget? getFloatingActionButton(BuildContext context);
+  FloatingActionButton? getFloatingActionButton(BuildContext context);
 
   FloatingActionButtonLocation? getFloatingActionButtonLocation();
 

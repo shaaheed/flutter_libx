@@ -11,12 +11,12 @@ class CacheService {
     }
   }
 
-  static Future<T> get<T>(String key, [Future<T> Function()? fn]) async {
+  static Future<T?> get<T>(String key, [Future<T?> Function()? fn]) async {
     // if (_cache.containsKey(key)) {
     //   print("returning cached data");
     //   return _cache[key] as T;
     // }
-    T value = (await fn?.call()) as T;
+    T? value = (await fn?.call()) as T;
     // ignore: avoid_print
     print("returning db data");
     if (value != null) {

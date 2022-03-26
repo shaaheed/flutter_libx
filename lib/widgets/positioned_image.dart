@@ -15,10 +15,10 @@ class PositionedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (positionedImage == null) return Utils.image(image);
+    if (positionedImage == null) return Utils.image(image) as Image;
     return Stack(
       children: <Widget>[
-        Utils.image(image),
+        Utils.image(image) as Image,
         Positioned(
           bottom: 0,
           right: 0,

@@ -19,7 +19,7 @@ abstract class ViewPage<T extends Model<T>> extends StatelessPage
     Key? key,
   }) : super(key: key);
 
-  T get model;
+  T? get model;
 
   @override
   AppBar getAppBar(BuildContext context) {

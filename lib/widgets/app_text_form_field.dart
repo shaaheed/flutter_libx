@@ -14,7 +14,7 @@ class AppTextFormField extends StatefulWidget {
   final void Function(void Function() callback)? onTap;
   final bool readOnly;
   final TextEditingController? controller;
-  final String Function()? value;
+  final String? Function()? value;
   final TextInputType? keyboardType;
 
   static const Color greyColor = Color(0xFFBDBDBD);

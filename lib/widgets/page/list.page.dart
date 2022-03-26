@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import '/object_factory.dart';
-import '../bottom_nav_item.dart';
 import '../../enums/display_as.dart';
 import '../../models/model.dart';
-import '../list/list.bloc.dart';
-import '../list/list.widget.dart';
-import 'abstract.page.dart';
 import '../widgets.dart';
-import '../../extensions/extensions.dart';
+import '../../extensions/string.extension.dart';
 
 abstract class ListPage<T extends Model<T>> extends StatefulList<T>
-    implements AbstractPage {
+    implements StatefulPage {
   ListPage(
     ListBloc<T> bloc, {
     DisplayAs displayAs = DisplayAs.listView,

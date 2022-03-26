@@ -20,7 +20,7 @@ class AppBarAction extends StatelessWidget {
     return InkWell(
       child: Row(
         children: <Widget>[
-          if (image != null) Utils.image(image, height: 37),
+          if (image != null) Utils.image(image, height: 37) as Image,
           if (image == null && text != null) text as Widget,
           if (icon != null) icon as Widget,
           // Icon(

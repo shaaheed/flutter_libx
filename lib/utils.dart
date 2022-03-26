@@ -77,13 +77,13 @@ class Utils {
     );
   }
 
-  static Widget image(
+  static Image? image(
     String? image, {
     double height = 40,
     bool nullable = false,
     String? nullImage,
   }) {
-    if (nullable && (image == null || image.isEmpty)) return const SizedBox();
+    if (nullable && (image == null || image.isEmpty)) return null;
     return Image.asset(
       image ?? nullImage ?? _notFoundImage,
       height: height,
@@ -95,14 +95,15 @@ class Utils {
   }
 
   static double progress({
-    required BuildContext context,
-    required double total, // amount
-    required double consumed, // spent
+    BuildContext? context,
+    double total = 0, // amount
+    double consumed = 0, // spent
     double offset = 0,
   }) {
-    double progress = MediaQuery.of(context).size.width - offset;
+    double progress = offset;
+    if (context != null) progress = MediaQuery.of(context).size.width - offset;
     double factor = 1;
-    if (consumed <= total) {
+    if (consumed != 0 && consumed <= total) {
       factor = consumed / total;
       factor = factor > 1 ? 1 : factor;
     }

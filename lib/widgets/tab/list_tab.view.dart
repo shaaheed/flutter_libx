@@ -7,9 +7,15 @@ import 'abstract_tab.view.dart';
 
 abstract class ListTabView<T, TModel extends Model<TModel>>
     extends StatefulList<TModel> implements AbstractTabView<T, TModel> {
+  @override
+  final T model;
+
+  @override
+  final int index;
+
   ListTabView(
-    int index,
-    T model, {
+    this.index,
+    this.model, {
     required ListBloc<TModel> bloc,
     ScrollController? controller,
     DisplayAs displayAs = DisplayAs.listView,

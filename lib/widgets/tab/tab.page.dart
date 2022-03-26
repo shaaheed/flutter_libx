@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import '/object_factory.dart';
-import '/widgets/page/page.mixin.dart';
-import '/widgets/page/stateful.page.dart';
 import '/enums/display_as.dart';
 import '../../models/model.dart';
-import '/widgets/list/list.widget.dart';
-import 'abstract_tab.view.dart';
 import '../widgets.dart';
 export 'tab_view.dart';
 
@@ -26,12 +22,13 @@ abstract class TabPage<T, TModel extends Model<TModel>,
           key: key,
         );
 
-  // Widget buildWidget(BuildContext context, Widget? widget) =>
-  //     widget ?? const SizedBox();
+  @override
+  Widget buildWidget(BuildContext context, Widget? widget) =>
+      widget ?? const SizedBox();
 
   String? buildTabTitle(T model);
 
-  Future<List<T>> getTabs(BuildContext context);
+  Future<List<T>?> getTabs(BuildContext context);
 
   TView createTabView(T model, int index);
 
@@ -111,27 +108,29 @@ class _TabPageState<T, TModel extends Model<TModel>,
   @override
   initState() {
     widget.getTabs(context).then((value) {
-      _tabs = value;
-      _initialIndex = widget.getInitialIndex(_tabs.length);
+      if (value != null) {
+        _tabs = value;
+        _initialIndex = widget.getInitialIndex(_tabs.length);
 
-      // tab controller
-      _controller = TabController(
-        initialIndex: _initialIndex,
-        length: _tabs.length,
-        vsync: this,
-      );
+        // tab controller
+        _controller = TabController(
+          initialIndex: _initialIndex,
+          length: _tabs.length,
+          vsync: this,
+        );
 
-      _tabViews = List.generate(
-        _tabs.length,
-        (index) {
-          var view = widget.createTabView(_tabs[index], index);
-          return view as TView;
-        },
-      );
+        _tabViews = List.generate(
+          _tabs.length,
+          (index) {
+            var view = widget.createTabView(_tabs[index], index);
+            return view as TView;
+          },
+        );
 
-      _controller.addListener(tabListener);
+        _controller.addListener(tabListener);
 
-      widget.onTabChanged(_initialIndex);
+        widget.onTabChanged(_initialIndex);
+      }
       setState(() {
         init = true;
       });
@@ -171,7 +170,7 @@ class _TabPageState<T, TModel extends Model<TModel>,
 
   @override
   Widget build(BuildContext context) {
-    if (!init) return const CircularProgress();
+    if (!init || _tabs.isEmpty) return const CircularProgress();
     var selectedTab = getSelectedTabView();
     FloatingActionButton? floatingActionButton;
     FloatingActionButtonLocation? floatingActionButtonLocation;
