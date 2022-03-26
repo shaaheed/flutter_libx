@@ -16,7 +16,7 @@ class CacheService {
     //   print("returning cached data");
     //   return _cache[key] as T;
     // }
-    T? value = (await fn?.call()) as T;
+    T? value = await fn?.call();
     // ignore: avoid_print
     print("returning db data");
     if (value != null) {

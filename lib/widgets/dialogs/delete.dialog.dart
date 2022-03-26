@@ -5,7 +5,7 @@ import '../../utils.dart';
 class DeleteDialog extends AppDialog {
   DeleteDialog(
     BuildContext context,
-    void Function() action,
+    void Function()? action,
   ) : super(
           titleText: 'Delete?'.i18n(context),
           detailsText:

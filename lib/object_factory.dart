@@ -9,12 +9,9 @@ class ObjectFactory<T> {
   T getCurrent() => _state;
 
   T createNew() {
-    _state = null as T;
     _state = _createFactory.call();
     return _state;
   }
 
-  dispose() {
-    _state = null as T;
-  }
+  dispose() {}
 }
