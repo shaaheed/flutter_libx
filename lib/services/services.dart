@@ -1,3 +1,4 @@
+export 'data/data.dart';
 export 'app.service.dart';
 export 'cache.service.dart';
 export 'database.service.dart';

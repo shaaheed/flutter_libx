@@ -1,7 +1,7 @@
 name: libx
 description: A set of widgets that is needed for every projects.
 version: 0.0.1
-homepage:
+homepage: https://github.com/shaaheed/flutter_libx
 
 environment:
   sdk: ">=2.16.0 <3.0.0"
