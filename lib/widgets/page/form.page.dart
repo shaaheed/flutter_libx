@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '/services/services.dart';
-import 'package:uuid/uuid.dart';
 import '../../widgets/add_edit_appbar.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../models/model.dart';
@@ -10,6 +9,7 @@ import 'page.mixin.dart';
 import 'stateful.page.dart';
 import '../app_button.dart';
 import '../../utils.dart';
+import '../../widgets/list/list.widget.dart';
 
 abstract class FormPage<T extends Model<T>> extends StatefulPage
     with PageMixin {
@@ -19,11 +19,11 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
   FormPage({
     Object? arguments,
     Key? key,
-  }) : super(key: key);
+  }) : super(arguments: arguments, key: key);
 
   T createModel();
 
-  Future<void> onSubmit();
+  Future<void>? onSubmit() => null;
 
   T get model => state.getCurrent()._model;
 
@@ -101,14 +101,20 @@ class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
   @override
   void initState() {
     super.initState();
-    if (widget.arguments != null) {
+    Object? _arguments;
+    if (widget.arguments != null &&
+        widget.arguments is NavigatorActionArguments<T>) {
+      _arguments = (widget.arguments as NavigatorActionArguments<T>).arguments;
+    } else {
+      _arguments = widget.arguments;
+    }
+    if (_arguments != null) {
       _isUpdateMode = true;
       if (widget.arguments is T) {
         _model = (widget.arguments as T).clone();
       }
     } else {
       _model = widget.createModel();
-      _model.id = const Uuid().v4();
     }
     widget.initState();
   }
@@ -125,8 +131,19 @@ class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
         _loading = true;
       });
       try {
-        await widget.onSubmit();
-        Navigator.pop(context, _model);
+        await widget.onSubmit.call();
+        if (widget.arguments is NavigatorActionArguments<T>) {
+          NavigatorActionArguments<T> navigatorArguments =
+              widget.arguments as NavigatorActionArguments<T>;
+          if (navigatorArguments.action != null) {
+            bool result = await navigatorArguments.action!.call(_model);
+            if (result) {
+              Navigator.pop(context, _model);
+            }
+          }
+        } else {
+          Navigator.pop(context, _model);
+        }
       } catch (ex) {
         ToastService.show(
           'Something went wrong. Try again'.i18n(context),

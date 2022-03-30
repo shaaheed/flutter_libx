@@ -10,9 +10,12 @@ import '../../object_factory.dart';
 import '../../extensions/string.extension.dart';
 import '../../../helpers/popup.dart';
 import '../../../enums/display_as.dart';
+import '../../services/repository.service.dart';
+import '../../services/app.service.dart';
 
 abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
-  final ListBloc<T> bloc;
+  final ListBloc<T>? bloc;
+  final RepositoryService<T>? repository;
   final ScrollController? controller;
   final ObjectFactory<StatefulListState<T, StatefulList<T>>>? state;
   final DisplayAs displayAs;
@@ -20,8 +23,9 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   final StatefulListData<T> data = StatefulListData<T>();
   final bool callOnLoadOnInit;
 
-  StatefulList(
-    this.bloc, {
+  StatefulList({
+    this.bloc,
+    this.repository,
     this.state,
     this.displayAs = DisplayAs.listView,
     this.controller,
@@ -60,17 +64,48 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
 
   void refresh(Object? arguments) => data.state.getCurrent().refresh(arguments);
 
-  void updateItem(T item) => bloc.updateItem(item);
+  Future<bool> updateItem(T? item) async {
+    if (item != null && repository != null) {
+      int _updated = await repository!.update(item);
+      return _updated > 0;
+    }
+    return false;
+  }
 
-  void addItem(T item) => bloc.addItem(item);
+  Future<bool> addItem(T? item) async {
+    if (item != null && repository != null) {
+      int _inserted = await repository!.insert(item);
+      return _inserted > 0;
+    }
+    return false;
+  }
 
-  Future<bool> deleteItem(T item) => Future.value(false);
+  Future<bool> deleteItem(T? item) async {
+    bool deleted = false;
+    if (item != null && repository != null) {
+      int _deleted = await repository!.delete(item);
+      deleted = _deleted > 0;
+      if (deleted && bloc != null) bloc!.deleteItem(item);
+    }
+    return deleted;
+  }
 
-  List<T> getItems() => bloc.items;
+  Future<List<T>?> loadItems({Object? arguments}) async {
+    var items = await repository?.list(
+      offset: bloc?.offset ?? 0,
+      limit: bloc?.limit ?? 10,
+      arguments: arguments ?? this.arguments,
+    );
+    bloc?.addItems(items);
+    bloc?.forward();
+    return items;
+  }
 
-  T getItem(int index) => bloc.items[index];
+  List<T>? getItems() => bloc?.items;
 
-  int getItemCount() => bloc.items.length;
+  T? getItem(int index) => bloc?.items[index];
+
+  int? getItemCount() => bloc?.items.length;
 
   Future<void> onPullRefresh() => Future.value();
 
@@ -88,22 +123,27 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
     return ListView.separated(
       controller: getController(),
       itemBuilder: (context, index) {
-        T item = getItem(index);
+        T? item = getItem(index);
         if (displayAs == DisplayAs.listView) {
           return Slidable(
             startActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
                 SlidableAction(
-                  onPressed: (BuildContext context) async {
+                  onPressed: (BuildContext context) {
                     String? routeName = getEditPageRoute();
                     if (routeName != null) {
-                      var result = await Navigator.pushNamed(
+                      _navigate(
                         context,
                         routeName,
-                        arguments: item,
+                        model: item,
+                        onSubmit: (_) => updateItem(item),
+                        onComplete: (Object? result) {
+                          if (result is T) {
+                            bloc?.updateItem(item);
+                          }
+                        },
                       );
-                      if (result is T) updateItem(result);
                     }
                   },
                   backgroundColor: Colors.white,
@@ -122,10 +162,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
                       builder: (context) {
                         return DeleteDialog(
                           context,
-                          () async {
-                            bool deleted = await deleteItem(item);
-                            if (deleted) bloc.deleteItem(item);
-                          },
+                          () => deleteItem(item),
                         );
                       },
                     );
@@ -137,10 +174,14 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
                 ),
               ],
             ),
-            child: itemBuilder(context, item),
+            child: item != null
+                ? itemBuilder(context, item)
+                : const Text('No item'),
           );
         }
-        return itemBuilder(context, item);
+        return item != null
+            ? itemBuilder(context, item)
+            : const Text('No item');
       },
       separatorBuilder: (context, index) {
         return Container(
@@ -148,7 +189,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
           child: const Divider(height: 1),
         );
       },
-      itemCount: itemCount,
+      itemCount: itemCount ?? 0,
     );
   }
 
@@ -162,11 +203,20 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   FloatingActionButton? getFloatingActionButton(BuildContext context) {
     if (canShowFloatingActionButton()) {
       return FloatingActionButton(
-        onPressed: () async {
+        onPressed: () {
           String? routeName = getAddPageRoute();
           if (routeName != null) {
-            var args = await Navigator.pushNamed(context, routeName);
-            if (args is T) addItem(args);
+            _navigate(
+              context,
+              routeName,
+              model: null,
+              onSubmit: (newItem) => addItem(newItem),
+              onComplete: (Object? result) {
+                if (result is T) {
+                  bloc?.addItem(result);
+                }
+              },
+            );
           }
         },
         backgroundColor: Colors.white,
@@ -187,17 +237,30 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   ) {
     String? routeName = getEditPageRoute();
     if (routeName != null && displayAs == DisplayAs.listView) {
-      Popup.editDeleteMenu(
-        context,
-        item,
-        routeName,
-        (args) {
-          if (args is T) updateItem(args);
-        },
-        () async {
-          bool deleted = await deleteItem(item);
-          if (deleted) bloc.deleteItem(item);
-        },
+      Popup.showPopupMenu<String>(
+        context: context,
+        offset: AppService.getCurrentOffset(),
+        items: [
+          Popup.editMenuItem(
+            () {
+              _navigate(
+                context,
+                routeName,
+                model: item,
+                onSubmit: (_) => updateItem(item),
+                onComplete: (Object? result) {
+                  if (result is T) {
+                    bloc?.updateItem(item);
+                  }
+                },
+              );
+            },
+          ),
+          Popup.deleteMenuItem(
+            context,
+            () => deleteItem(item),
+          )
+        ],
       );
     }
   }
@@ -207,7 +270,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
       children: [
         if (data.state.getCurrent().loading) const CircularProgress(),
         StreamBuilder<Event>(
-          stream: bloc.stream,
+          stream: bloc?.stream,
           initialData: LoadingEvent(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -236,6 +299,24 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   }
 
   void dispose() => data.state.dispose();
+
+  void _navigate(
+    BuildContext context,
+    String route, {
+    T? model,
+    Future<bool> Function(T? arguments)? onSubmit,
+    void Function(Object? arguments)? onComplete,
+  }) async {
+    var result = await Navigator.pushNamed(
+      context,
+      route,
+      arguments: NavigatorActionArguments<T>(
+        action: onSubmit,
+        arguments: model,
+      ),
+    );
+    onComplete?.call(result);
+  }
 }
 
 class StatefulListState<T extends Model<T>, TWidget extends StatefulList<T>>
@@ -248,16 +329,18 @@ class StatefulListState<T extends Model<T>, TWidget extends StatefulList<T>>
     widget.initState();
 
     if (widget.callOnLoadOnInit) {
-      widget.bloc.load(arguments: widget.arguments);
+      widget.loadItems();
     }
 
     ScrollController? scrollController = widget.data.controller;
     scrollController?.addListener(() async {
-      if (widget.bloc.hasMore && scrollController.position.extentAfter <= 0) {
+      if (widget.bloc != null &&
+          widget.bloc!.hasMore &&
+          scrollController.position.extentAfter <= 0) {
         setState(() {
           loading = true;
         });
-        await widget.bloc.load(arguments: widget.arguments);
+        await widget.loadItems();
         setState(() {
           loading = false;
         });
@@ -265,7 +348,7 @@ class StatefulListState<T extends Model<T>, TWidget extends StatefulList<T>>
     });
   }
 
-  reset() => widget.bloc.reset();
+  reset() => widget.bloc?.reset();
 
   void refresh(Object? arguments) =>
       Future.delayed(Duration.zero, () => setState(() {}));
@@ -276,7 +359,6 @@ class StatefulListState<T extends Model<T>, TWidget extends StatefulList<T>>
   @override
   void dispose() {
     widget.dispose();
-    widget.data.controller?.dispose();
     super.dispose();
   }
 }
@@ -284,4 +366,14 @@ class StatefulListState<T extends Model<T>, TWidget extends StatefulList<T>>
 class StatefulListData<T extends Model<T>> {
   late ObjectFactory<StatefulListState<T, StatefulList<T>>> state;
   ScrollController? controller;
+}
+
+class NavigatorActionArguments<T> {
+  T? arguments;
+  Future<bool> Function(T? arguments)? action;
+
+  NavigatorActionArguments({
+    this.arguments,
+    this.action,
+  });
 }

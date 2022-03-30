@@ -4,6 +4,7 @@ import '../../models/model.dart';
 import '../list/list.bloc.dart';
 import '../list/list.widget.dart';
 import 'abstract_tab.view.dart';
+import '../../services/repository.service.dart';
 
 abstract class ListTabView<T, TModel extends Model<TModel>>
     extends StatefulList<TModel> implements AbstractTabView<T, TModel> {
@@ -16,13 +17,15 @@ abstract class ListTabView<T, TModel extends Model<TModel>>
   ListTabView(
     this.index,
     this.model, {
-    required ListBloc<TModel> bloc,
+    ListBloc<TModel>? bloc,
+    RepositoryService<TModel>? repository,
     ScrollController? controller,
     DisplayAs displayAs = DisplayAs.listView,
     Object? arguments,
     Key? key,
   }) : super(
-          bloc,
+          bloc: bloc,
+          repository: repository,
           controller: controller,
           callOnLoadOnInit: false,
           displayAs: displayAs,
@@ -31,7 +34,7 @@ abstract class ListTabView<T, TModel extends Model<TModel>>
         );
 
   @override
-  void onTabChanged(int selectedIndex) => bloc.load(arguments: arguments);
+  void onTabChanged(int selectedIndex) => bloc?.load(arguments: arguments);
 
   @override
   void reset() => data.state.getCurrent().reset();

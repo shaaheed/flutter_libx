@@ -5,8 +5,9 @@ import '../../utils.dart';
 class DeleteDialog extends AppDialog {
   DeleteDialog(
     BuildContext context,
-    void Function()? action,
-  ) : super(
+    Future<bool> Function()? action, {
+    Key? key,
+  }) : super(
           titleText: 'Delete?'.i18n(context),
           detailsText:
               'You won\'t be able to undo this action. Do you really want to do delete?'
@@ -14,9 +15,11 @@ class DeleteDialog extends AppDialog {
           actions: [
             AppDialogAction(
               titleText: 'Yes'.i18n(context),
-              onTap: () {
-                Navigator.of(context).pop();
-                action?.call();
+              onTap: () async {
+                var deleted = await action?.call();
+                if (deleted != null && deleted) {
+                  Navigator.of(context).pop();
+                }
               },
               highlighted: true,
             ),
@@ -25,5 +28,6 @@ class DeleteDialog extends AppDialog {
               onTap: () => Navigator.of(context).pop(),
             ),
           ],
+          key: key,
         );
 }

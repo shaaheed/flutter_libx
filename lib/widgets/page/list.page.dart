@@ -4,18 +4,21 @@ import '../../enums/display_as.dart';
 import '../../models/model.dart';
 import '../widgets.dart';
 import '../../extensions/string.extension.dart';
+import '../../services/repository.service.dart';
 
 abstract class ListPage<T extends Model<T>> extends StatefulList<T>
     implements StatefulPage {
-  ListPage(
-    ListBloc<T> bloc, {
+  ListPage({
+    ListBloc<T>? bloc,
+    RepositoryService<T>? repository,
     DisplayAs displayAs = DisplayAs.listView,
     ScrollController? controller,
     ObjectFactory<StatefulListState<T, StatefulList<T>>>? state,
     Object? arguments,
     Key? key,
   }) : super(
-          bloc,
+          bloc: bloc,
+          repository: repository,
           controller: controller,
           state: state,
           displayAs: displayAs,

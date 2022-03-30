@@ -50,7 +50,8 @@ abstract class TabPage<T, TModel extends Model<TModel>,
     if (!_state._tabVisited.containsKey(selectedIndex)) {
       _state._tabVisited[selectedIndex] = false;
     }
-    if (!_state._tabVisited.containsKey(selectedIndex)) {
+    var _visited = _state._tabVisited[selectedIndex];
+    if (_visited != null && !_visited) {
       _state._tabVisited[selectedIndex] = true;
       _state._tabViews[selectedIndex].onTabChanged(selectedIndex);
     }

@@ -1,3 +1,4 @@
+import '../../services/repository.service.dart';
 import '../../models/model.dart';
 import '../../blocs/bloc.dart';
 import '../../blocs/event.dart';
@@ -9,11 +10,26 @@ abstract class ListBloc<T extends Model<T>> extends Bloc<Event> {
   bool _hasMore = false;
   List<T> _items = [];
 
+  RepositoryService<T>? createRepository() => null;
+
   Future<void> load({
     Object? arguments,
-  }) {
+  }) async {
+    var repo = createRepository();
+    if (repo != null) {
+      var list = await repo.list(
+        offset: offset,
+        limit: limit,
+        arguments: arguments,
+      );
+      addItems(list);
+      forward();
+    }
+    return Future.value();
+  }
+
+  void forward() {
     _offset = _offset + _limit;
-    return Future.value(null);
   }
 
   void reset() {
@@ -33,7 +49,7 @@ abstract class ListBloc<T extends Model<T>> extends Bloc<Event> {
   List<T> get items => _items;
 
   void addItems(List<T>? items) {
-    if (_offset == 0 && (items == null || items.isNotEmpty)) {
+    if (_offset == 0 && (items == null || items.isEmpty)) {
       addEvent(EmptyEvent());
     } else if (items != null || items!.isNotEmpty) {
       _hasMore = _limit == items.length;

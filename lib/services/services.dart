@@ -5,3 +5,4 @@ export 'database.service.dart';
 export 'localization.service.dart';
 export 'toast.service.dart';
 export 'ioc.service.dart';
+export 'repository.service.dart';

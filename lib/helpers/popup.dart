@@ -53,7 +53,7 @@ class Popup {
 
   static PopupMenuModel<String> deleteMenuItem(
     BuildContext context,
-    void Function() action,
+    Future<bool> Function() action,
   ) {
     return PopupMenuModel<String>(
       value: 'delete',
@@ -78,7 +78,7 @@ class Popup {
     T model,
     String editRoute,
     void Function(Object? args) onEdit,
-    void Function() onDelete,
+    Future<bool> Function() onDelete,
   ) {
     Popup.showPopupMenu<String>(
       context: context,
