@@ -5,7 +5,7 @@ import './row_subtitle.widget.dart';
 import './row_trailing.widget.dart';
 
 class ListRowWidget extends StatelessWidget {
-  final String title;
+  final String? title;
   final String? subtitle;
   final String? trailing;
   final GestureTapCallback? onTap;
@@ -18,7 +18,7 @@ class ListRowWidget extends StatelessWidget {
   final EdgeInsets padding;
 
   const ListRowWidget({
-    required this.title,
+    this.title,
     this.subtitle,
     this.trailing,
     this.onTap,
@@ -85,14 +85,15 @@ class ListRowWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          title,
+                          title ?? "",
                           style: const TextStyle(fontSize: 18.0),
                           softWrap: true,
                         ),
                       ),
                     ],
                   ),
-                  if (subtitle != null) RowSubtitleWidget(subtitle as String),
+                  if (subtitle != null && subtitle!.isNotEmpty)
+                    RowSubtitleWidget(subtitle as String),
                 ],
               ),
             ),

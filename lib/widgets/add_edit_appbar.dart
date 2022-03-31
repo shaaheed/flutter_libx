@@ -14,17 +14,16 @@ class AddEditAppBar extends BackAppBar {
           title: title,
           elevation: elevation,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.done_rounded),
-              onPressed: () {
-                if (formState?.currentState != null &&
-                    context != null &&
-                    onSave != null) {
-                  bool valid = formState!.currentState!.validate();
-                  if (valid) onSave();
-                }
-              },
-            ),
+            if (onSave != null)
+              IconButton(
+                icon: const Icon(Icons.done_rounded),
+                onPressed: () {
+                  if (formState?.currentState != null) {
+                    bool valid = formState!.currentState!.validate();
+                    if (valid) onSave();
+                  }
+                },
+              ),
           ],
           key: key,
         );

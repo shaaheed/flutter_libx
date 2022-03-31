@@ -23,10 +23,7 @@ class AppBarAction extends StatelessWidget {
           if (image != null) Utils.image(image, height: 37) as Image,
           if (image == null && text != null) text as Widget,
           if (icon != null) icon as Widget,
-          // Icon(
-          //   Icons.arrow_drop_down,
-          //   color: Colors.black.withOpacity(0.4),
-          // ),
+          if (icon == null) const SizedBox(width: 10),
         ],
       ),
       onTap: onTap,

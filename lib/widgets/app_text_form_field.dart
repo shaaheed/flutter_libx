@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class AppTextFormField extends StatefulWidget {
   final Widget? prefixIcon;
@@ -50,11 +51,14 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
-    _controller.text = widget.value?.call() ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
+    // initState does not call on setState
+    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+      _controller.text = widget.value?.call() ?? "";
+    });
     return TextFormField(
       keyboardType: widget.keyboardType,
       onTap: () async {
