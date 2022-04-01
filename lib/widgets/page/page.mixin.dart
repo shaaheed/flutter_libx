@@ -17,7 +17,7 @@ mixin PageMixin on AbstractPage {
   Widget? getDrawer(context) => null;
 
   @override
-  void refresh(Object arguments) {}
+  void refresh({Object? arguments}) {}
 
   @override
   List<Widget> getAppBarActions(BuildContext context) => [];

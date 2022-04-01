@@ -69,7 +69,7 @@ abstract class ListBloc<T extends Model<T>> extends Bloc<Event> {
   }
 
   void addItem(T? item) {
-    if (item != null && _items.isNotEmpty) {
+    if (item != null) {
       _items.add(item);
       addEvent(DataEvent<List<T>>(data: items));
     }

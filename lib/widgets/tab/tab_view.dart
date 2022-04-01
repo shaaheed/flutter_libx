@@ -16,13 +16,15 @@ abstract class TabView<T, TModel extends Model<TModel>> extends StatefulWidget
   }) : super(key: key);
 
   @override
-  BuildContext? get context => state.getCurrent().context;
+  BuildContext? get context => state.getCurrent()?.context;
 
   @override
   void onTabChanged(int selectedIndex) {}
 
   @override
-  void refresh(Object? arguments) => state.getCurrent().refresh();
+  void refresh({Object? arguments}) => state.getCurrent()?.refresh(
+        arguments: arguments,
+      );
 
   @override
   void initState() {}
@@ -33,12 +35,12 @@ abstract class TabView<T, TModel extends Model<TModel>> extends StatefulWidget
   @override
   TabViewState<T, TModel, TabView<T, TModel>> createState() =>
       // ignore: no_logic_in_create_state
-      state.createNew();
+      state.createNew() as TabViewState<T, TModel, TabView<T, TModel>>;
 }
 
 class TabViewState<T, TModel extends Model<TModel>,
     TWidget extends TabView<T, TModel>> extends State<TWidget> {
-  void refresh() {
+  void refresh({Object? arguments}) {
     Future.delayed(Duration.zero, () => setState(() {}));
   }
 

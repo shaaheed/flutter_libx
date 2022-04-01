@@ -34,26 +34,33 @@ abstract class TabPage<T, TModel extends Model<TModel>,
 
   int getInitialIndex(int tabCount) => 0;
 
-  int getCurrentIndex() => state.getCurrent()._currentIndex;
+  int? getCurrentIndex() => state.getCurrent()?._currentIndex;
 
   /// Refresh TabPage with its all TabView.
   @override
-  refresh(Object arguments) => state.getCurrent().refresh(arguments);
+  void refresh({
+    Object? arguments,
+  }) =>
+      state.getCurrent()?.refresh(
+            arguments: arguments,
+          );
 
   void resetTabPageWithAllTabViews() =>
-      state.getCurrent().resetTabPageWithAllTabViews();
+      state.getCurrent()?.resetTabPageWithAllTabViews();
 
-  TView? getSelectedTabView() => state.getCurrent().getSelectedTabView();
+  TView? getSelectedTabView() => state.getCurrent()?.getSelectedTabView();
 
   void onTabChanged(int selectedIndex) {
     var _state = state.getCurrent();
-    if (!_state._tabVisited.containsKey(selectedIndex)) {
-      _state._tabVisited[selectedIndex] = false;
-    }
-    var _visited = _state._tabVisited[selectedIndex];
-    if (_visited != null && !_visited) {
-      _state._tabVisited[selectedIndex] = true;
-      _state._tabViews[selectedIndex].onTabChanged(selectedIndex);
+    if (_state != null) {
+      if (!_state._tabVisited.containsKey(selectedIndex)) {
+        _state._tabVisited[selectedIndex] = false;
+      }
+      var _visited = _state._tabVisited[selectedIndex];
+      if (_visited != null && !_visited) {
+        _state._tabVisited[selectedIndex] = true;
+        _state._tabViews[selectedIndex].onTabChanged(selectedIndex);
+      }
     }
   }
 
@@ -83,12 +90,11 @@ abstract class TabPage<T, TModel extends Model<TModel>,
     );
   }
 
-  // @override
-  // Widget getScaffold(BuildContext context) => null;
-
   @override
   // ignore: no_logic_in_create_state
-  _TabPageState<T, TModel, TView> createState() => state.createNew();
+  _TabPageState<T, TModel, TView> createState() =>
+      // ignore: no_logic_in_create_state
+      state.createNew() as _TabPageState<T, TModel, TView>;
 }
 
 class _TabPageState<T, TModel extends Model<TModel>,
@@ -141,7 +147,7 @@ class _TabPageState<T, TModel extends Model<TModel>,
   }
 
   /// Refresh TabPage with its all TabView.
-  void refresh(Object arguments) {}
+  void refresh({Object? arguments}) {}
 
   void resetTabPageWithAllTabViews() {
     _tabVisited = {};

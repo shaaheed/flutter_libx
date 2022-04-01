@@ -60,9 +60,14 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
 
   void initState() {}
 
-  BuildContext? get context => data.state.getCurrent().context;
+  BuildContext? get context => data.state.getCurrent()?.context;
 
-  void refresh(Object? arguments) => data.state.getCurrent().refresh(arguments);
+  void refresh({
+    Object? arguments,
+  }) =>
+      data.state.getCurrent()?.refresh(
+            arguments: arguments,
+          );
 
   Future<bool> updateItem(T? item) async {
     if (item != null && repository != null) {
@@ -194,8 +199,9 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   }
 
   @override
-  // ignore: no_logic_in_create_state
-  State<StatefulWidget> createState() => data.state.createNew();
+  State<StatefulWidget> createState() =>
+      // ignore: no_logic_in_create_state
+      data.state.createNew() as State<StatefulWidget>;
 
   FloatingActionButtonLocation? getFloatingActionButtonLocation() =>
       FloatingActionButtonLocation.centerFloat;
@@ -266,9 +272,10 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   }
 
   Widget build(BuildContext context, Widget? widget) {
+    var state = data.state.getCurrent();
     return Stack(
       children: [
-        if (data.state.getCurrent().loading) const CircularProgress(),
+        if (state == null || state.loading) const CircularProgress(),
         StreamBuilder<Event>(
           stream: bloc?.stream,
           initialData: LoadingEvent(),
@@ -350,7 +357,7 @@ class StatefulListState<T extends Model<T>, TWidget extends StatefulList<T>>
 
   reset() => widget.bloc?.reset();
 
-  void refresh(Object? arguments) =>
+  void refresh({Object? arguments}) =>
       Future.delayed(Duration.zero, () => setState(() {}));
 
   @override

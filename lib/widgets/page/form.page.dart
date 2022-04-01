@@ -25,23 +25,33 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
 
   Future<void>? onSubmit() => null;
 
-  T? get model => state.getCurrent()._model;
+  T? get model => state.getCurrent()?._model;
 
-  bool get isUpdateMode => state.getCurrent()._isUpdateMode;
+  bool get isUpdateMode {
+    var _updateMode = state.getCurrent()?._isUpdateMode;
+    return _updateMode != null && _updateMode;
+  }
 
-  bool get isLoading => state.getCurrent()._loading;
+  bool get isLoading {
+    var _loading = state.getCurrent()?._loading;
+    return _loading == null || _loading;
+  }
 
-  bool get isSubmitting => state.getCurrent()._submitting;
+  bool get isSubmitting {
+    var _submitting = state.getCurrent()?._submitting;
+    return _submitting == null || _submitting;
+  }
 
-  GlobalKey<FormState> get formState => state.getCurrent()._formState;
+  GlobalKey<FormState>? get formState => state.getCurrent()?._formState;
 
-  void handleSubmit() => state.getCurrent().handleSubmit();
+  void handleSubmit() => state.getCurrent()?.handleSubmit();
 
-  String getSubmitButtonText(BuildContext context) => 'Submit'.i18n(context);
+  String getSubmitButtonText(BuildContext context) =>
+      isUpdateMode ? 'Update'.i18n(context) : 'Save'.i18n(context);
 
   Future<void>? initState() => null;
 
-  void setState(VoidCallback fn) => state.getCurrent()._setState(fn);
+  void setState(VoidCallback fn) => state.getCurrent()?._setState(fn);
 
   @override
   AppBar getAppBar(BuildContext context) {
@@ -93,8 +103,9 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
   }
 
   @override
-  // ignore: no_logic_in_create_state
-  State<StatefulWidget> createState() => state.createNew();
+  State<StatefulWidget> createState() =>
+      // ignore: no_logic_in_create_state
+      state.createNew() as State<StatefulWidget>;
 }
 
 class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
@@ -152,7 +163,6 @@ class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
         _submitting = true;
       });
       try {
-        await widget.onSubmit.call();
         if (widget.arguments is NavigatorActionArguments<T>) {
           NavigatorActionArguments<T> navigatorArguments =
               widget.arguments as NavigatorActionArguments<T>;
@@ -163,6 +173,7 @@ class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
             }
           }
         } else {
+          await widget.onSubmit.call();
           Navigator.pop(context, _model);
         }
         setState(() {

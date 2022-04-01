@@ -13,7 +13,7 @@ abstract class AbstractTabView<T, TModel extends Model<TModel>> {
 
   void onTabChanged(int index);
 
-  void refresh(Object? arguments);
+  void refresh({Object? arguments});
 
   void reset();
 

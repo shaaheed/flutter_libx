@@ -8,7 +8,7 @@ abstract class AbstractPage {
 
   String getTitle(BuildContext context);
 
-  void refresh(Object arguments);
+  void refresh({Object? arguments});
 
   Widget getScaffold(BuildContext context);
 

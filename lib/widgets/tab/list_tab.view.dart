@@ -37,5 +37,5 @@ abstract class ListTabView<T, TModel extends Model<TModel>>
   void onTabChanged(int selectedIndex) => bloc?.load(arguments: arguments);
 
   @override
-  void reset() => data.state.getCurrent().reset();
+  void reset() => data.state.getCurrent()?.reset();
 }
