@@ -14,10 +14,14 @@ abstract class TabPage<T, TModel extends Model<TModel>,
   );
 
   TabPage({
-    Object? arguments,
     this.displayAs = DisplayAs.listView,
+    Color? backgroundColor,
+    Color? appBarBackgroundColor,
+    Object? arguments,
     Key? key,
   }) : super(
+          backgroundColor: backgroundColor,
+          appBarBackgroundColor: appBarBackgroundColor,
           arguments: arguments,
           key: key,
         );
@@ -70,6 +74,7 @@ abstract class TabPage<T, TModel extends Model<TModel>,
     List<T> tabs,
   ) {
     return BackAppBar(
+      backgroundColor: appBarBackgroundColor,
       context: context,
       title: getTitle(context),
       actions: getAppBarActions(context),
@@ -191,6 +196,7 @@ class _TabPageState<T, TModel extends Model<TModel>,
     return widget.buildWidget(
       context,
       AppScaffold(
+        backgroundColor: widget.backgroundColor,
         appBar: widget.getTabPageAppBar(context, _controller, _tabs),
         body: TabBarView(
           controller: _controller,

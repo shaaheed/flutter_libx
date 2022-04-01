@@ -5,8 +5,12 @@ import '../../extensions/string.extension.dart';
 abstract class StatefulPage extends StatefulWidget implements AbstractPage {
   @override
   final Object? arguments;
+  final Color? backgroundColor;
+  final Color? appBarBackgroundColor;
 
   const StatefulPage({
+    this.backgroundColor,
+    this.appBarBackgroundColor,
     this.arguments,
     Key? key,
   }) : super(key: key);
@@ -14,6 +18,7 @@ abstract class StatefulPage extends StatefulWidget implements AbstractPage {
   @override
   Widget getScaffold(BuildContext context) {
     return AppScaffold(
+      backgroundColor: backgroundColor,
       appBar: getAppBar(context),
       body: buildWidget(context, null),
       drawer: getDrawer(context),
@@ -25,6 +30,7 @@ abstract class StatefulPage extends StatefulWidget implements AbstractPage {
   @override
   AppBar getAppBar(BuildContext context) {
     return BackAppBar(
+      backgroundColor: appBarBackgroundColor,
       context: context,
       title: getTitle(context).i18n(context),
     );

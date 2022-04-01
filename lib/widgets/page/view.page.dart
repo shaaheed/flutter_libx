@@ -17,7 +17,10 @@ abstract class ViewPage<T extends Model<T>> extends StatelessPage
     this.appBarBackgroundColor,
     Object? arguments,
     Key? key,
-  }) : super(key: key);
+  }) : super(
+          arguments: arguments,
+          key: key,
+        );
 
   T? get model;
 

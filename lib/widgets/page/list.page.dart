@@ -8,6 +8,11 @@ import '../../services/repository.service.dart';
 
 abstract class ListPage<T extends Model<T>> extends StatefulList<T>
     implements StatefulPage {
+  @override
+  final Color? backgroundColor;
+  @override
+  final Color? appBarBackgroundColor;
+
   ListPage({
     ListBloc<T>? bloc,
     RepositoryService<T>? repository,
@@ -15,6 +20,8 @@ abstract class ListPage<T extends Model<T>> extends StatefulList<T>
     ScrollController? controller,
     ObjectFactory<StatefulListState<T, StatefulList<T>>>? state,
     Object? arguments,
+    this.backgroundColor,
+    this.appBarBackgroundColor,
     Key? key,
   }) : super(
           bloc: bloc,
@@ -38,6 +45,7 @@ abstract class ListPage<T extends Model<T>> extends StatefulList<T>
   @override
   Widget getScaffold(BuildContext context) {
     return AppScaffold(
+      backgroundColor: backgroundColor,
       appBar: getAppBar(context),
       body: super.build(context, null),
       drawer: getDrawer(context),
@@ -49,6 +57,7 @@ abstract class ListPage<T extends Model<T>> extends StatefulList<T>
   @override
   AppBar getAppBar(BuildContext context) {
     return BackAppBar(
+      backgroundColor: appBarBackgroundColor,
       context: context,
       title: getTitle(context).i18n(context),
     );
