@@ -47,6 +47,65 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
 
   String? getEditPageRoute() => getAddPageRoute();
 
+  Widget? getSlidableWidget(Widget? child) {
+    return Slidable(
+      startActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (BuildContext context) {
+              String? routeName = getEditPageRoute();
+              if (routeName != null) {
+                _navigate(
+                  context,
+                  routeName,
+                  model: item,
+                  onSubmit: (T? editedItem) => updateItem(editedItem),
+                  onComplete: (Object? result) {
+                    if (result is T) {
+                      bloc?.updateItem(result);
+                    }
+                  },
+                );
+              }
+            },
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.grey,
+            icon: Icons.edit_outlined,
+            label: 'Edit'.i18n(context),
+          ),
+          const SizedBox(
+            height: 25,
+            child: VerticalDivider(),
+          ),
+          SlidableAction(
+            onPressed: (BuildContext context) async {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return DeleteDialog(
+                    context,
+                    () => deleteItem(item),
+                  );
+                },
+              );
+            },
+            backgroundColor: Colors.white, //Colors.red,
+            foregroundColor: Colors.grey,
+            icon: Icons.delete_outline_rounded,
+            label: 'Delete'.i18n(context),
+          ),
+        ],
+      ),
+      child: child != null
+          ? itemBuilder(
+              context,
+              child,
+            )
+          : const Text('No item'),
+    );
+  }
+
   bool canShowFloatingActionButton() {
     String? route = getAddPageRoute();
     return displayAs != DisplayAs.selectAnItem &&
@@ -142,10 +201,10 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
                         context,
                         routeName,
                         model: item,
-                        onSubmit: (_) => updateItem(item),
+                        onSubmit: (T? editedItem) => updateItem(editedItem),
                         onComplete: (Object? result) {
                           if (result is T) {
-                            bloc?.updateItem(item);
+                            bloc?.updateItem(result);
                           }
                         },
                       );
@@ -253,10 +312,10 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
                 context,
                 routeName,
                 model: item,
-                onSubmit: (_) => updateItem(item),
+                onSubmit: (T? editedItem) => updateItem(editedItem),
                 onComplete: (Object? result) {
                   if (result is T) {
-                    bloc?.updateItem(item);
+                    bloc?.updateItem(result);
                   }
                 },
               );
