@@ -10,7 +10,7 @@ class DeleteDialog extends AppDialog {
   }) : super(
           titleText: 'Delete?'.i18n(context),
           detailsText:
-              'You won\'t be able to undo this action. Do you really want to do delete?'
+              'You won\'t be able to undo this action. Do you really want to delete?'
                   .i18n(context),
           actions: [
             AppDialogAction(

@@ -47,7 +47,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
 
   String? getEditPageRoute() => getAddPageRoute();
 
-  Widget? getSlidableWidget(Widget? child) {
+  Widget? getSlidableWidget(BuildContext context, T? item) {
     return Slidable(
       startActionPane: ActionPane(
         motion: const ScrollMotion(),
@@ -62,9 +62,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
                   model: item,
                   onSubmit: (T? editedItem) => updateItem(editedItem),
                   onComplete: (Object? result) {
-                    if (result is T) {
-                      bloc?.updateItem(result);
-                    }
+                    if (result is T) bloc?.updateItem(result);
                   },
                 );
               }
@@ -97,12 +95,10 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
           ),
         ],
       ),
-      child: child != null
-          ? itemBuilder(
-              context,
-              child,
-            )
-          : const Text('No item'),
+      child: itemBuilder(
+        context,
+        item,
+      ),
     );
   }
 
@@ -115,7 +111,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
 
   T? getDefaultItem() => null;
 
-  Widget itemBuilder(BuildContext context, T model);
+  Widget itemBuilder(BuildContext context, T? model);
 
   void initState() {}
 
@@ -189,63 +185,11 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
       itemBuilder: (context, index) {
         T? item = getItem(index);
         if (displayAs == DisplayAs.listView) {
-          return Slidable(
-            startActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (BuildContext context) {
-                    String? routeName = getEditPageRoute();
-                    if (routeName != null) {
-                      _navigate(
-                        context,
-                        routeName,
-                        model: item,
-                        onSubmit: (T? editedItem) => updateItem(editedItem),
-                        onComplete: (Object? result) {
-                          if (result is T) {
-                            bloc?.updateItem(result);
-                          }
-                        },
-                      );
-                    }
-                  },
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.grey,
-                  icon: Icons.edit_outlined,
-                  label: 'Edit'.i18n(context),
-                ),
-                const SizedBox(
-                  height: 25,
-                  child: VerticalDivider(),
-                ),
-                SlidableAction(
-                  onPressed: (BuildContext context) async {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return DeleteDialog(
-                          context,
-                          () => deleteItem(item),
-                        );
-                      },
-                    );
-                  },
-                  backgroundColor: Colors.white, //Colors.red,
-                  foregroundColor: Colors.grey,
-                  icon: Icons.delete_outline_rounded,
-                  label: 'Delete'.i18n(context),
-                ),
-              ],
-            ),
-            child: item != null
-                ? itemBuilder(context, item)
-                : const Text('No item'),
-          );
+          Widget? widget = getSlidableWidget(context, item);
+          if (widget == null) return itemBuilder(context, item);
+          return widget;
         }
-        return item != null
-            ? itemBuilder(context, item)
-            : const Text('No item');
+        return itemBuilder(context, item);
       },
       separatorBuilder: (context, index) {
         return Container(
@@ -292,13 +236,15 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
     return null;
   }
 
-  void handleItemTap(BuildContext context, T item) {
-    if (displayAs == DisplayAs.selectAnItem) Navigator.pop(context, item);
+  void handleItemTap(BuildContext context, T? item) {
+    if (displayAs == DisplayAs.selectAnItem && item != null) {
+      Navigator.pop(context, item);
+    }
   }
 
   void handleItemLongPress(
     BuildContext context,
-    T item,
+    T? item,
   ) {
     String? routeName = getEditPageRoute();
     if (routeName != null && displayAs == DisplayAs.listView) {
