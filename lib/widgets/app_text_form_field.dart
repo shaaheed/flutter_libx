@@ -103,12 +103,12 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).errorColor,
+            color: Theme.of(context).colorScheme.error,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).errorColor,
+            color: Theme.of(context).colorScheme.error,
           ),
         ),
         // errorStyle: widget.errorStyle,
