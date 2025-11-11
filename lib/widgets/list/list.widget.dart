@@ -113,6 +113,13 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
 
   Widget itemBuilder(BuildContext context, T? model);
 
+  Widget separatorBuilder(BuildContext context, int index) {
+    return Container(
+      margin: const EdgeInsets.only(left: 65.0),
+      child: const Divider(height: 1),
+    );
+  }
+
   void initState() {}
 
   BuildContext? get context => data.state.getCurrent()?.context;
@@ -191,12 +198,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
         }
         return itemBuilder(context, item);
       },
-      separatorBuilder: (context, index) {
-        return Container(
-          margin: const EdgeInsets.only(left: 65.0),
-          child: const Divider(height: 1),
-        );
-      },
+      separatorBuilder: (context, index) => separatorBuilder(context, index),
       itemCount: itemCount ?? 0,
     );
   }
