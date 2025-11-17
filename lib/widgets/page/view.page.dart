@@ -22,7 +22,12 @@ abstract class ViewPage<T extends Model<T>> extends StatelessPage
           key: key,
         );
 
-  T? get model;
+  T? get model {
+    if (arguments is T) {
+      return arguments.clone();
+    }
+    return null;
+  }
 
   @override
   AppBar getAppBar(BuildContext context) {
