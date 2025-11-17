@@ -43,6 +43,8 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
         );
   }
 
+  String? getViewPageRoute() => null;
+
   String? getAddPageRoute() => null;
 
   String? getEditPageRoute() => getAddPageRoute();
@@ -241,6 +243,12 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   void handleItemTap(BuildContext context, T? item) {
     if (displayAs == DisplayAs.selectAnItem && item != null) {
       Navigator.pop(context, item);
+    }
+    else {
+      String? routeName = getViewPageRoute();
+      if (routeName != null) {
+        _navigate(context, routeName, model: item);
+      }
     }
   }
 
