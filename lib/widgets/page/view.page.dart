@@ -24,7 +24,7 @@ abstract class ViewPage<T extends Model<T>> extends StatelessPage
 
   T? get model {
     if (arguments is T) {
-      return arguments;
+      return (arguments as T).clone();
     }
     return null;
   }
