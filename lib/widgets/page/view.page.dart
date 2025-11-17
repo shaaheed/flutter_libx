@@ -4,6 +4,7 @@ import '../../widgets/app_scaffold.dart';
 import '../../models/model.dart';
 import 'page.mixin.dart';
 import 'stateless.page.dart';
+import '../../widgets/list/list.widget.dart';
 
 abstract class ViewPage<T extends Model<T>> extends StatelessPage
     with PageMixin {
