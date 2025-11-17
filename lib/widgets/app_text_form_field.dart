@@ -112,7 +112,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
           ),
         ),
         // errorStyle: widget.errorStyle,
-        // contentPadding: widget.contentPadding,
+        contentPadding: widget.contentPadding,
         isDense: true,
       ),
       onChanged: (value) {
