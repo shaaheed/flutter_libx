@@ -6,7 +6,7 @@ import 'abstract.page.dart';
 
 mixin PageMixin on AbstractPage {
   @override
-  AppBar getAppBar(BuildContext context) {
+  AppBar? getAppBar(BuildContext context) {
     return BackAppBar(
       context: context,
       title: getTitle(context).i18n(context),
