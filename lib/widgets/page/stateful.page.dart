@@ -28,7 +28,7 @@ abstract class StatefulPage extends StatefulWidget implements AbstractPage {
   }
 
   @override
-  AppBar getAppBar(BuildContext context) {
+  AppBar? getAppBar(BuildContext context) {
     return BackAppBar(
       backgroundColor: appBarBackgroundColor,
       context: context,
