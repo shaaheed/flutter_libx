@@ -36,7 +36,7 @@ abstract class ViewPage<T extends Model<T>> extends StatelessPage
   }
 
   @override
-  AppBar getAppBar(BuildContext context) {
+  AppBar? getAppBar(BuildContext context) {
     return BackAppBar(
       context: context,
       title: getTitle(context),
