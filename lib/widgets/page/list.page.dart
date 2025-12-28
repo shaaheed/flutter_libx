@@ -55,7 +55,7 @@ abstract class ListPage<T extends Model<T>> extends StatefulList<T>
   }
 
   @override
-  AppBar getAppBar(BuildContext context) {
+  AppBar? getAppBar(BuildContext context) {
     return BackAppBar(
       backgroundColor: appBarBackgroundColor,
       context: context,
