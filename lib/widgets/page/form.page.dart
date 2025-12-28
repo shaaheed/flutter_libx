@@ -54,7 +54,7 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
   void setState(VoidCallback fn) => state.getCurrent()?._setState(fn);
 
   @override
-  AppBar getAppBar(BuildContext context) {
+  AppBar? getAppBar(BuildContext context) {
     return AddEditAppBar(
       context: context,
       title: getTitle(context),
