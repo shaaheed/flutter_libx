@@ -16,7 +16,7 @@ abstract class AbstractPage {
 
   FloatingActionButtonLocation? getFloatingActionButtonLocation();
 
-  AppBar getAppBar(BuildContext context);
+  AppBar? getAppBar(BuildContext context);
 
   List<Widget> getAppBarActions(BuildContext context);
 
