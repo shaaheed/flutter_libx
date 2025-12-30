@@ -29,7 +29,7 @@ class AppScaffold extends StatelessWidget {
     AppService.setContext(context);
     return Scaffold(
       backgroundColor: backgroundColor ?? Colors.white, //.grey.shade50,
-      appBar: appBar ?? AppAppBar(title: appBarTitle),
+      appBar: appBar ?? (appBarTitle ? AppAppBar(title: appBarTitle) : null),
       drawer: drawer,
       body: body,
       bottomNavigationBar: bottomNavigationBar,
