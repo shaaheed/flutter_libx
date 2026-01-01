@@ -4,6 +4,7 @@ import '../../enums/display_as.dart';
 import '../../models/model.dart';
 import '../widgets.dart';
 import '../../extensions/string.extension.dart';
+import '../../const.dart';
 import '../../services/repository.service.dart';
 
 abstract class ListPage<T extends Model<T>> extends StatefulList<T>
@@ -74,4 +75,7 @@ abstract class ListPage<T extends Model<T>> extends StatefulList<T>
 
   @override
   Widget? getBottomAppBar(BuildContext context) => null;
+
+  @override
+  EdgeInsetsGeometry? getPagePadding() => Const.appPagePadding;
 }
