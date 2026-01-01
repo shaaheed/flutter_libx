@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:libx/widgets/widgets.dart';
 import '../../extensions/string.extension.dart';
+import '../../const.dart';
 
 abstract class StatefulPage extends StatefulWidget implements AbstractPage {
   @override
@@ -47,4 +48,7 @@ abstract class StatefulPage extends StatefulWidget implements AbstractPage {
 
   @override
   Widget? getBottomAppBar(BuildContext context) => null;
+
+  @override
+  EdgeInsetsGeometry? getPagePadding() => Const.appPagePadding;
 }
