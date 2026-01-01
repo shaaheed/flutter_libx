@@ -77,11 +77,7 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
                       if (isSubmitting) const CircularProgress(),
                       SingleChildScrollView(
                         child: Container(
-                          padding: const EdgeInsets.only(
-                            top: 35.0,
-                            left: 10,
-                            right: 20.0,
-                          ),
+                          padding: getPagePadding(),
                           child: Form(
                             key: formState,
                             autovalidateMode:
