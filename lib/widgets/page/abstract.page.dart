@@ -24,7 +24,9 @@ abstract class AbstractPage {
 
   List<BottomNavItem> getBottomNavItems(BuildContext context);
 
-  Widget? getBottomAppBar(BuildContext context) => null;
+  Widget? getBottomAppBar(BuildContext context);
+
+  EdgeInsetsGeometry? getPagePadding();
 
   void dispose() {}
 }
