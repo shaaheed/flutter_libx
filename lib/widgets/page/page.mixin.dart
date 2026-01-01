@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../bottom_nav_item.dart';
 import '../../extensions/extensions.dart';
 import '../back_appbar.dart';
+import '../../const.dart';
 import 'abstract.page.dart';
 
 mixin PageMixin on AbstractPage {
@@ -34,6 +35,9 @@ mixin PageMixin on AbstractPage {
   @override
   FloatingActionButtonLocation? getFloatingActionButtonLocation() =>
       FloatingActionButtonLocation.centerFloat;
+  
+  @override
+  EdgeInsetsGeometry? getPagePadding() => Const.appPagePadding;
 
   @override
   void dispose() {}
