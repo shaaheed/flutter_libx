@@ -1,7 +1,5 @@
-import 'package:flutter/foundation.dart';
 
 abstract class Model<TModel> extends GenericModel<String, TModel> {
-  @mustCallSuper
   Model(String id) : super(id);
 }
 

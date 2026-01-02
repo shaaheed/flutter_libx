@@ -26,9 +26,9 @@ class NoData extends StatelessWidget {
 class TextWidget extends StatelessWidget {
   final String? text;
 
-  const TextWidget({
+  const TextWidget({Key? key, 
     this.text,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class TextWidget extends StatelessWidget {
 }
 
 class TapToAddOneWidget extends StatelessWidget {
-  const TapToAddOneWidget();
+  const TapToAddOneWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

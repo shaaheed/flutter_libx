@@ -26,7 +26,7 @@ abstract class ViewPage<T extends Model<T>> extends StatelessPage
   T? get model {
     if (arguments != null) {
       if (arguments is NavigatorActionArguments<T>) {
-        return (arguments as NavigatorActionArguments<T>).arguments?.clone();
+        return (arguments as NavigatorActionArguments<T>).model?.clone();
       }
       else if (arguments is T) {
         return (arguments as T).clone();

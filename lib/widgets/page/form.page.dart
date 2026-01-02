@@ -21,7 +21,7 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
     Key? key,
   }) : super(arguments: arguments, key: key);
 
-  T createModel();
+  Future<T> createModel();
 
   Future<void>? onSubmit() => null;
 
@@ -33,8 +33,9 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
   }
 
   bool get isLoading {
-    var _loading = state.getCurrent()?._loading;
-    return _loading == null || _loading;
+    var _stateLoading = state.getCurrent()?._stateLoading;
+    var _modelLoading = state.getCurrent()?._modelLoading;
+    return _stateLoading == null || _stateLoading || _modelLoading == null || _modelLoading;
   }
 
   bool get isSubmitting {
@@ -105,7 +106,8 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
 }
 
 class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
-  bool _loading = false;
+  bool _stateLoading = false;
+  bool _modelLoading = false;
   bool _submitting = false;
   final _formState = GlobalKey<FormState>();
   T? _model;
@@ -114,34 +116,40 @@ class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
   @override
   void initState() {
     super.initState();
-    _loading = true;
+    _stateLoading = true;
+    _modelLoading = true;
     Future.delayed(Duration.zero, () {
-      Object? _arguments;
+      Object? model;
       if (widget.arguments != null &&
           widget.arguments is NavigatorActionArguments<T>) {
-        _arguments =
-            (widget.arguments as NavigatorActionArguments<T>).arguments;
+        model = (widget.arguments as NavigatorActionArguments<T>).model;
       } else {
-        _arguments = widget.arguments;
+        model = widget.arguments;
       }
-      if (_arguments != null) {
+      if (model != null) {
         _isUpdateMode = true;
-        if (_arguments is T) {
-          _model = _arguments.clone();
-        }
+        if (model is T) _model = model.clone();
+        setState(() {
+          _modelLoading = false;
+        });
       } else {
-        _model = widget.createModel();
+        widget.createModel().then((value) {
+          _model = value;
+          setState(() {
+            _modelLoading = false;
+          });
+        });
       }
       Future<void>? _initState = widget.initState();
       if (_initState != null) {
         _initState.then((value) {
           setState(() {
-            _loading = false;
+            _stateLoading = false;
           });
         });
       } else {
         setState(() {
-          _loading = false;
+          _stateLoading = false;
         });
       }
     });

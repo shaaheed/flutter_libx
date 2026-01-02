@@ -47,6 +47,8 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
 
   String? getAddPageRoute() => null;
 
+  Object? getArguments() => arguments;
+
   String? getEditPageRoute() => getAddPageRoute();
 
   Widget? getSlidableWidget(BuildContext context, T? item) {
@@ -225,9 +227,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
               model: null,
               onSubmit: (newItem) => addItem(newItem),
               onComplete: (Object? result) {
-                if (result is T) {
-                  bloc?.addItem(result);
-                }
+                if (result is T) bloc?.addItem(result);
               },
             );
           }
@@ -243,8 +243,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   void handleItemTap(BuildContext context, T? item) {
     if (displayAs == DisplayAs.selectAnItem && item != null) {
       Navigator.pop(context, item);
-    }
-    else {
+    } else {
       String? routeName = getViewPageRoute();
       if (routeName != null) {
         _navigate(context, routeName, model: item);
@@ -333,9 +332,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
       context,
       route,
       arguments: NavigatorActionArguments<T>(
-        action: onSubmit,
-        arguments: model,
-      ),
+          action: onSubmit, model: model, arguments: getArguments()),
     );
     onComplete?.call(result);
   }
@@ -391,10 +388,12 @@ class StatefulListData<T extends Model<T>> {
 }
 
 class NavigatorActionArguments<T> {
-  T? arguments;
-  Future<bool> Function(T? arguments)? action;
+  T? model;
+  Object? arguments;
+  Future<bool> Function(T? model)? action;
 
   NavigatorActionArguments({
+    this.model,
     this.arguments,
     this.action,
   });

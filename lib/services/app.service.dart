@@ -38,8 +38,9 @@ class AppService {
     // Brightness statusBarBrightness,
     // String webOnlyWindowName,
   }) async {
-    if (await launcher.canLaunch(urlString)) {
-      return launcher.launch(urlString);
+    Uri uri = Uri.parse(urlString);
+    if (await launcher.canLaunchUrl(uri)) {
+      return launcher.launchUrl(uri);
     } else {
       if (errorMessage != null && errorMessage.isNotEmpty) {
         showToast(errorMessage);
@@ -187,7 +188,7 @@ class AppService {
   /// Schedule a callback for the end of this frame.
   static void doAfterPostFrameCallback(Function? func) {
     if (func != null) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         func.call();
       });
     }

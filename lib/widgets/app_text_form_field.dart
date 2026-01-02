@@ -56,7 +56,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
   @override
   Widget build(BuildContext context) {
     // initState does not call on setState
-    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       _controller.text = widget.value?.call() ?? "";
     });
     return TextFormField(

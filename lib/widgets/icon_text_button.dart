@@ -21,10 +21,10 @@ class IconTextButton extends StatelessWidget {
       child: TextButton(
         style: ButtonStyle(
           foregroundColor: selected
-              ? MaterialStateProperty.resolveWith((states) => Colors.black)
-              : MaterialStateProperty.resolveWith((states) => Colors.grey),
-          overlayColor: MaterialStateProperty.resolveWith(
-            (states) => Colors.grey.withOpacity(0),
+              ? WidgetStateProperty.resolveWith((states) => Colors.black)
+              : WidgetStateProperty.resolveWith((states) => Colors.grey),
+          overlayColor: WidgetStateProperty.resolveWith(
+            (states) => Colors.grey.withValues(alpha: 0),
           ),
         ),
         onPressed: onTap,
