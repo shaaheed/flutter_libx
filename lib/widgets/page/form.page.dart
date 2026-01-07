@@ -13,46 +13,53 @@ import '../../widgets/list/list.widget.dart';
 
 abstract class FormPage<T extends Model<T>> extends StatefulPage
     with PageMixin {
-  final ObjectFactory<_FormPageState<T>> state =
-      ObjectFactory(() => _FormPageState<T>());
+  final ObjectFactory<FormPageState<T>>? state;
+  final FormPageData<T> data = FormPageData<T>();
 
   FormPage({
+    this.state,
     Object? arguments,
     Key? key,
-  }) : super(arguments: arguments, key: key);
+  }) : super(arguments: arguments, key: key) {
+    data.state =
+        state ?? ObjectFactory<FormPageState<T>>(() => FormPageState<T>());
+  }
 
   Future<T> createModel();
 
   Future<void>? onSubmit() => null;
 
-  T? get model => state.getCurrent()?._model;
+  T? get model => data.state.getCurrent()?._model;
 
   bool get isUpdateMode {
-    var _updateMode = state.getCurrent()?._isUpdateMode;
+    var _updateMode = data.state.getCurrent()?._isUpdateMode;
     return _updateMode != null && _updateMode;
   }
 
   bool get isLoading {
-    var _stateLoading = state.getCurrent()?._stateLoading;
-    var _modelLoading = state.getCurrent()?._modelLoading;
-    return _stateLoading == null || _stateLoading || _modelLoading == null || _modelLoading;
+    var _stateLoading = data.state.getCurrent()?._stateLoading;
+    var _modelLoading = data.state.getCurrent()?._modelLoading;
+    return _stateLoading == null ||
+        _stateLoading ||
+        _modelLoading == null ||
+        _modelLoading;
   }
 
   bool get isSubmitting {
-    var _submitting = state.getCurrent()?._submitting;
+    var _submitting = data.state.getCurrent()?._submitting;
     return _submitting == null || _submitting;
   }
 
-  GlobalKey<FormState>? get formState => state.getCurrent()?._formState;
+  GlobalKey<FormState>? get formState => data.state.getCurrent()?._formState;
 
-  void handleSubmit() => state.getCurrent()?.handleSubmit();
+  void handleSubmit() => data.state.getCurrent()?.handleSubmit();
 
   String getSubmitButtonText(BuildContext context) =>
       isUpdateMode ? 'Update'.i18n(context) : 'Save'.i18n(context);
 
   Future<void>? initState() => null;
 
-  void setState(VoidCallback fn) => state.getCurrent()?._setState(fn);
+  void setState(VoidCallback fn) => data.state.getCurrent()?._setState(fn);
 
   @override
   AppBar? getAppBar(BuildContext context) {
@@ -102,10 +109,10 @@ abstract class FormPage<T extends Model<T>> extends StatefulPage
   @override
   State<StatefulWidget> createState() =>
       // ignore: no_logic_in_create_state
-      state.createNew() as State<StatefulWidget>;
+      data.state.createNew() as State<StatefulWidget>;
 }
 
-class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
+class FormPageState<T extends Model<T>> extends State<FormPage<T>> {
   bool _stateLoading = false;
   bool _modelLoading = false;
   bool _submitting = false;
@@ -203,4 +210,8 @@ class _FormPageState<T extends Model<T>> extends State<FormPage<T>> {
   void _setState(VoidCallback fn) {
     setState(fn);
   }
+}
+
+class FormPageData<T extends Model<T>> {
+  late ObjectFactory<FormPageState<T>> state;
 }
