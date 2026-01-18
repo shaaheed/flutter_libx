@@ -18,7 +18,7 @@ dependencies:
   uuid:
   get_it:
   rxdart:
-  share:
+  share_plus:
   url_launcher:
   flutter_slidable:
   fl_chart:
