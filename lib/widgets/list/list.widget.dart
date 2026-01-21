@@ -234,6 +234,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
         },
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
+        heroTag: DateTime.now().microsecondsSinceEpoch.toString(),
         child: const Icon(Icons.add),
       );
     }
