@@ -16,22 +16,32 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     });
   }
 
-  // String getSql(WhereClause? where, int? offset, int? limit) {
-  //   String table = getTable();
-  //   String whereStr = where?.toWhereString() ?? '';
-  //   String limitOffset = '';
-  //   if (limit != null) limitOffset += 'limit $limit';
-  //   if (offset != null) limitOffset += ' offset $offset';
-  //   return 'select * from $table $whereStr $limitOffset';
-  // }
+  String getSql() {
+    return 'select * from $table';
+  }
+
+  WhereClause? buildWhere(String action, Object? arguments) => null;
 
   Future<List<T>?> list({
     int offset = 0,
     int limit = 10,
     Object? arguments,
-  });
+  }) async {
+    WhereClause? whereClause = buildWhere('list', arguments);
+    String newSql =
+        "${getSql()} ${whereClause?.toWhereString() ?? ''} limit $limit offset $offset";
+    final result = await getDatabase().rawQuery(newSql, whereClause?.getArgs());
+    return mapModels(result);
+  }
 
-  Future<T?> get(Object? arguments);
+  Future<T?> get(Object? arguments) async {
+    WhereClause? whereClause = buildWhere('get', arguments);
+    whereClause ??= WhereClause([]);
+    whereClause.add('id', arguments);
+    String newSql = "${getSql()} ${whereClause.toWhereString()} limit 1";
+    final result = await getDatabase().rawQuery(newSql, whereClause.getArgs());
+    return mapModel(result.first);
+  }
 
   Future<int> insert(T model) {
     List<String> columns = [];
