@@ -137,7 +137,7 @@ abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
 
   Future<bool> updateItem(T? item) async {
     if (item != null && repository != null) {
-      int _updated = await repository!.update(item);
+      int _updated = await repository!.update(item, null);
       return _updated > 0;
     }
     return false;
