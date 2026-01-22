@@ -1,4 +1,4 @@
-import '../../services/repository.service.dart';
+import '../../data/sqflite/repository.service.dart';
 import '../../models/model.dart';
 import '../../blocs/bloc.dart';
 import '../../blocs/event.dart';
@@ -10,7 +10,7 @@ abstract class ListBloc<T extends Model<T>> extends Bloc<Event> {
   bool _hasMore = false;
   List<T> _items = [];
 
-  RepositoryService<T>? createRepository() => null;
+  SqfliteRepoService<T>? createRepository() => null;
 
   Future<void> load({
     Object? arguments,

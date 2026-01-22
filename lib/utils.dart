@@ -1,5 +1,5 @@
 export './services/localization.service.dart';
-export './services/database.service.dart';
+export 'data/sqflite/database.service.dart';
 export './extensions/list.extension.dart';
 export './extensions/string.extension.dart';
 export './services/cache.service.dart';

@@ -4,7 +4,7 @@ import '../../models/model.dart';
 import '../list/list.bloc.dart';
 import '../list/list.widget.dart';
 import 'abstract_tab.view.dart';
-import '../../services/repository.service.dart';
+import '../../data/sqflite/repository.service.dart';
 
 abstract class ListTabView<T, TModel extends Model<TModel>>
     extends StatefulList<TModel> implements AbstractTabView<T, TModel> {
@@ -18,7 +18,7 @@ abstract class ListTabView<T, TModel extends Model<TModel>>
     this.index,
     this.model, {
     ListBloc<TModel>? bloc,
-    RepositoryService<TModel>? repository,
+    SqfliteRepoService<TModel>? repository,
     ScrollController? controller,
     DisplayAs displayAs = DisplayAs.listView,
     Object? arguments,

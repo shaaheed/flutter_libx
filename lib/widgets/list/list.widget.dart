@@ -10,12 +10,12 @@ import '../../object_factory.dart';
 import '../../extensions/string.extension.dart';
 import '../../../helpers/popup.dart';
 import '../../../enums/display_as.dart';
-import '../../services/repository.service.dart';
+import '../../data/sqflite/repository.service.dart';
 import '../../services/app.service.dart';
 
 abstract class StatefulList<T extends Model<T>> extends StatefulWidget {
   final ListBloc<T>? bloc;
-  final RepositoryService<T>? repository;
+  final SqfliteRepoService<T>? repository;
   final ScrollController? controller;
   final ObjectFactory<StatefulListState<T, StatefulList<T>>>? state;
   final DisplayAs displayAs;

@@ -1,5 +1,5 @@
 
-import 'package:libx/services/data/sql_column.dart';
+import 'package:libx/data/sql/table.dart';
 
 abstract class Model<TModel> extends GenericModel<String, TModel> {
   Model(String id) : super(id);
@@ -12,5 +12,5 @@ abstract class GenericModel<TKey, TModel> extends Object {
 
   TModel clone();
 
-  List<SqlColumn> toSqlColumn();
+  ITable getTable();
 }

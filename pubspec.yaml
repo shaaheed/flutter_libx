@@ -1,5 +1,5 @@
 name: libx
-description: A set of widgets that is needed for every projects.
+description: A set of reusable widgets.
 version: 0.0.1
 homepage: https://github.com/shaaheed/flutter_libx
 

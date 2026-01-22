@@ -3,7 +3,7 @@ import 'package:libx/libx.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-abstract class DatabaseService {
+abstract class SqfliteDbService {
   /// Default databases location.
   Future<String> get path => getDatabasesPath();
 

@@ -5,7 +5,7 @@ import '../../models/model.dart';
 import '../widgets.dart';
 import '../../extensions/string.extension.dart';
 import '../../const.dart';
-import '../../services/repository.service.dart';
+import '../../data/sqflite/repository.service.dart';
 
 abstract class ListPage<T extends Model<T>> extends StatefulList<T>
     implements StatefulPage {
@@ -16,7 +16,7 @@ abstract class ListPage<T extends Model<T>> extends StatefulList<T>
 
   ListPage({
     ListBloc<T>? bloc,
-    RepositoryService<T>? repository,
+    SqfliteRepoService<T>? repository,
     DisplayAs displayAs = DisplayAs.listView,
     ScrollController? controller,
     ObjectFactory<StatefulListState<T, StatefulList<T>>>? state,
