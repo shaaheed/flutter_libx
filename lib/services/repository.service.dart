@@ -8,11 +8,11 @@ abstract class RepositoryService<T extends Model<T>> {
 
   String getTable();
 
-  T mapToModel(Map<String, dynamic> map);
+  T mapModel(Map<String, dynamic> map);
 
-  List<T> mapToModels(List<Map<String, dynamic>> result) {
+  List<T> mapModels(List<Map<String, dynamic>> result) {
     return List.generate(result.length, (i) {
-      return mapToModel(result[i]);
+      return mapModel(result[i]);
     });
   }
 
