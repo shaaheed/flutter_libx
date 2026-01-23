@@ -94,9 +94,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
       if (fn(c)) {
         columns.add(c.getName());
         dynamic value = c.getValue();
-        if (value is String) {
-          value = '"$value"';
-        } else if (value is bool) {
+        if (value is bool) {
           value = value ? 1 : 0;
         }
         else if (value is DateTime) {
