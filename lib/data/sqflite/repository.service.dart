@@ -96,6 +96,11 @@ abstract class SqfliteRepoService<T extends Model<T>> {
         dynamic value = c.getValue();
         if (value is String) {
           value = '"$value"';
+        } else if (value is bool) {
+          value = value ? 1 : 0;
+        }
+        else if (value is DateTime) {
+          value = value.millisecondsSinceEpoch;
         }
         values.add(value);
       }
