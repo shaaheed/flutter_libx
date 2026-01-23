@@ -79,7 +79,8 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     return getDatabase().rawDelete(sql, where.getArgs());
   }
 
-  Future<int> count(WhereClause? where) async {
+  Future<int> count(Object? arguments) async {
+    WhereClause? where = buildWhere('count', arguments);
     List<dynamic> args = where?.getArgs() ?? [];
     String whereStr = where?.toWhereString() ?? "";
     String sql = 'select count(*) from "$table" $whereStr';
