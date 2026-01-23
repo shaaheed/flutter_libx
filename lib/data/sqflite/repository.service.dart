@@ -1,6 +1,6 @@
 import 'package:libx/data/sql/column.dart';
 import 'package:libx/libx.dart';
-import 'package:libx/data/where_clause.dart';
+import 'package:libx/data/sql/where_clause.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class SqfliteRepoService<T extends Model<T>> {
@@ -46,7 +46,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
   Future<int> insert(T model) {
     List<String> columns = [];
     List<dynamic> values = [];
-    _fill(model.getTable().getColumns(), columns, values,
+    prepareColumnsAndValues(model.getTable().getColumns(), columns, values,
         (c) => c.getInsertable());
     String columnStr = columns.join(',');
     String valueStr = List.filled(columns.length, "?").join(",");
@@ -57,7 +57,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
   Future<int> update(T model, WhereClause? where) {
     List<String> columns = [];
     List<dynamic> values = [];
-    _fill(model.getTable().getColumns(), columns, values,
+    prepareColumnsAndValues(model.getTable().getColumns(), columns, values,
         (c) => c.getUpdatable());
     String whereStr = "where id=?";
     if (where != null) {
@@ -88,7 +88,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  void _fill(List<Column> list, List<String> columns, List<dynamic> values,
+  void prepareColumnsAndValues(List<Column> list, List<String> columns, List<dynamic> values,
       bool Function(Column c) fn) {
     for (final c in list) {
       if (fn(c)) {
