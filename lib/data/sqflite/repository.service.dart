@@ -17,7 +17,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
   }
 
   String getSql() {
-    return 'select * from $table';
+    return 'select x.* from $table x';
   }
 
   WhereClause? buildWhere(String action, Object? arguments) => null;
