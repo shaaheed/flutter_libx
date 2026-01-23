@@ -10,14 +10,14 @@ abstract class SqfliteRepoService<T extends Model<T>> {
 
   T mapModel(Map<String, dynamic> map);
 
+  String get prefix => 'x';
+
+  String getSql(Object? arguments) => 'select $prefix.* from $table $prefix';
+
   List<T> mapModels(List<Map<String, dynamic>> result) {
     return List.generate(result.length, (i) {
       return mapModel(result[i]);
     });
-  }
-
-  String getSql() {
-    return 'select x.* from $table x';
   }
 
   WhereClause? buildWhere(String action, Object? arguments) => null;
@@ -29,16 +29,23 @@ abstract class SqfliteRepoService<T extends Model<T>> {
   }) async {
     WhereClause? whereClause = buildWhere('list', arguments);
     String newSql =
-        "${getSql()} ${whereClause?.toWhereString() ?? ''} limit $limit offset $offset";
+        "${getSql(arguments)} ${whereClause?.toWhereString() ?? ''} limit $limit offset $offset";
     final result = await getDatabase().rawQuery(newSql, whereClause?.getArgs());
     return mapModels(result);
   }
 
   Future<T?> get(Object? arguments) async {
-    WhereClause? whereClause = buildWhere('get', arguments);
-    whereClause ??= WhereClause([]);
-    whereClause.add('id', arguments);
-    String newSql = "${getSql()} ${whereClause.toWhereString()} limit 1";
+    WhereClause? whereClause;
+    if (arguments is WhereClause) {
+      whereClause = arguments;
+    } else {
+      whereClause = buildWhere('get', arguments);
+    }
+    if (whereClause == null) {
+      whereClause = WhereClause([]);
+      whereClause.add('$prefix.id', arguments);
+    }
+    String newSql = "${getSql(arguments)} ${whereClause.toWhereString()} limit 1";
     final result = await getDatabase().rawQuery(newSql, whereClause.getArgs());
     return mapModel(result.first);
   }
