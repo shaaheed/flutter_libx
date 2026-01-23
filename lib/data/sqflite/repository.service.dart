@@ -63,8 +63,10 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     if (where != null) {
       whereStr = where.toWhereString();
       values.addAll(where.getArgs() as Iterable);
+    } else {
+      values.add(model.id);
     }
-    String columnStr = columns.join("=?, ");
+    String columnStr = '${columns.join("=?, ")}=?';
     String sql = 'update "$table" set $columnStr $whereStr;';
     return getDatabase().rawUpdate(sql, values);
   }
@@ -88,16 +90,15 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  void prepareColumnsAndValues(List<Column> list, List<String> columns, List<dynamic> values,
-      bool Function(Column c) fn) {
+  void prepareColumnsAndValues(List<Column> list, List<String> columns,
+      List<dynamic> values, bool Function(Column c) fn) {
     for (final c in list) {
       if (fn(c)) {
         columns.add(c.getName());
         dynamic value = c.getValue();
         if (value is bool) {
           value = value ? 1 : 0;
-        }
-        else if (value is DateTime) {
+        } else if (value is DateTime) {
           value = value.millisecondsSinceEpoch;
         }
         values.add(value);
