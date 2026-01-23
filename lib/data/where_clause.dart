@@ -2,7 +2,7 @@ class WhereClause {
   List<dynamic>? _args = [];
   final List<String> _properties = [];
 
-  WhereClause(_args);
+  WhereClause(this._args);
 
   WhereClause add(String property, Object? value) {
     _args ??= [];
