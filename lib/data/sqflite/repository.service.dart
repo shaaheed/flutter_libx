@@ -29,17 +29,16 @@ abstract class SqfliteRepoService<T extends Model<T>> {
   }) async {
     WhereClause? whereClause = buildWhere('list', arguments);
     String newSql =
-        "${getSql()} ${whereClause?.toWhereString() ?? ''} limit $limit offset $offset";
-    final result = await getDatabase().rawQuery(newSql, whereClause?.getArgs());
+        "${getSql()} ${whereClause?.sql ?? ''} limit $limit offset $offset";
+    final result = await getDatabase().rawQuery(newSql, whereClause?.args);
     return mapModels(result);
   }
 
   Future<T?> get(Object? arguments) async {
     WhereClause? whereClause = buildWhere('get', arguments);
-    whereClause ??= WhereClause([]);
-    whereClause.add('id', arguments);
-    String newSql = "${getSql()} ${whereClause.toWhereString()} limit 1";
-    final result = await getDatabase().rawQuery(newSql, whereClause.getArgs());
+    whereClause ??= WhereBuilder.column('id').eq(arguments);
+    String newSql = "${getSql()} ${whereClause.sql} limit 1";
+    final result = await getDatabase().rawQuery(newSql, whereClause.args);
     return mapModel(result.first);
   }
 
@@ -61,8 +60,8 @@ abstract class SqfliteRepoService<T extends Model<T>> {
         (c) => c.getUpdatable());
     String whereStr = "where id=?";
     if (where != null) {
-      whereStr = where.toWhereString();
-      values.addAll(where.getArgs() as Iterable);
+      whereStr = where.sql;
+      values.addAll(where.args as Iterable);
     }
     String columnStr = columns.join("=?, ");
     String sql = 'update "$table" set $columnStr $whereStr;';
@@ -75,14 +74,14 @@ abstract class SqfliteRepoService<T extends Model<T>> {
   }
 
   Future<int> deleteWhere(WhereClause where) {
-    String sql = 'delete from "table ${where.toWhereString()}";';
-    return getDatabase().rawDelete(sql, where.getArgs());
+    String sql = 'delete from "table ${where.sql}";';
+    return getDatabase().rawDelete(sql, where.args);
   }
 
   Future<int> count(Object? arguments) async {
     WhereClause? where = buildWhere('count', arguments);
-    List<dynamic> args = where?.getArgs() ?? [];
-    String whereStr = where?.toWhereString() ?? "";
+    List<dynamic> args = where?.args ?? [];
+    String whereStr = where?.sql ?? "";
     String sql = 'select count(*) from "$table" $whereStr';
     final result = await getDatabase().rawQuery(sql, args);
     return Sqflite.firstIntValue(result) ?? 0;

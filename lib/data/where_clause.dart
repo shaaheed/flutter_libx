@@ -1,26 +1,47 @@
 class WhereClause {
-  List<dynamic>? _args = [];
-  final List<String> _properties = [];
+  final String sql;
+  final List<dynamic>? args;
 
-  WhereClause(this._args);
+  const WhereClause(this.sql, [this.args = const []]);
 
-  WhereClause add(String property, Object? value) {
-    _args ??= [];
-    if (value == null || property.isEmpty) return this;
-    if (value is String && value.isEmpty) return this;
-    _args!.add(value);
-    _properties.add("$property=?");
-    return this;
-  }
+  WhereClause and(WhereClause other) =>
+      WhereClause('($sql AND ${other.sql})', [...args!, ...other.args!]);
 
-  String toWhereString() {
-    if (_properties.isNotEmpty) {
-      return " where ${_properties.join(" and ")}";
-    }
-    return "";
-  }
+  WhereClause or(WhereClause other) =>
+      WhereClause('($sql OR ${other.sql})', [...args!, ...other.args!]);
 
-  List<dynamic>? getArgs() {
-    return _args;
+  WhereClause not() => WhereClause('(NOT $sql)', args);
+}
+
+class WhereBuilder {
+  static WhereColumn column(String name) =>
+      WhereColumn(name);
+}
+
+class WhereColumn {
+  final String name;
+  const WhereColumn(this.name);
+
+  WhereClause eq(Object? value) => WhereClause('$name = ?', [value]);
+
+  WhereClause ne(Object? value) => WhereClause('$name != ?', [value]);
+
+  WhereClause gt(num value) => WhereClause('$name > ?', [value]);
+
+  WhereClause gte(num value) => WhereClause('$name >= ?', [value]);
+
+  WhereClause lt(num value) => WhereClause('$name < ?', [value]);
+
+  WhereClause lte(num value) => WhereClause('$name <= ?', [value]);
+
+  WhereClause like(String value) => WhereClause('$name LIKE ?', [value]);
+
+  WhereClause isNull() => WhereClause('$name IS NULL');
+
+  WhereClause isNotNull() => WhereClause('$name IS NOT NULL');
+
+  WhereClause includes(List<Object?> values) {
+    final placeholders = List.filled(values.length, '?').join(', ');
+    return WhereClause('$name IN ($placeholders)', values);
   }
 }
