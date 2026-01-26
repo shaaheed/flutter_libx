@@ -75,7 +75,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
   }
 
   Future<int> delete(T model) {
-    String sql = 'delete from "$table" $prefix where "$prefix.id=?";';
+    String sql = 'delete from "$table" $prefix where $prefix.id=?;';
     return getDatabase().rawDelete(sql, [model.id]);
   }
 
