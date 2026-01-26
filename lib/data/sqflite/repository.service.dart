@@ -1,6 +1,4 @@
-import 'package:libx/data/sql/column.dart';
 import 'package:libx/libx.dart';
-import 'package:libx/data/sql/where_clause.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class SqfliteRepoService<T extends Model<T>> {
@@ -76,12 +74,12 @@ abstract class SqfliteRepoService<T extends Model<T>> {
   }
 
   Future<int> delete(T model) {
-    String sql = 'delete from "$table" where id=?;';
+    String sql = 'delete from "$table $prefix" where "$prefix.id=?";';
     return getDatabase().rawDelete(sql, [model.id]);
   }
 
   Future<int> deleteWhere(WhereClause where) {
-    String sql = 'delete from "table ${where.sql}";';
+    String sql = 'delete from "$table $prefix ${where.sql}";';
     return getDatabase().rawDelete(sql, where.args);
   }
 
@@ -94,7 +92,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     }
     List<dynamic> args = where?.args ?? [];
     String whereStr = where?.sql ?? "";
-    String sql = 'select count(*) from "$table" $whereStr';
+    String sql = 'select count(*) from "$table $prefix" $whereStr';
     final result = await getDatabase().rawQuery(sql, args);
     return Sqflite.firstIntValue(result) ?? 0;
   }
