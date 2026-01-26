@@ -57,7 +57,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     return getDatabase().rawInsert(sql, values);
   }
 
-  Future<int> update(T model, WhereClause? where) {
+  Future<int> update(T model, [WhereClause? where]) {
     List<String> columns = [];
     List<dynamic> values = [];
     prepareColumnsAndValues(model.getTable().getColumns(), columns, values,
