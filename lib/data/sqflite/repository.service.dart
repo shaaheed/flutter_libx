@@ -42,7 +42,8 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     whereClause ??= Where.col('$prefix.id').eq(arguments);
     String newSql = "${getSql(arguments)} ${whereClause.sql} limit 1";
     final result = await getDatabase().rawQuery(newSql, whereClause.args);
-    return mapModel(result.first);
+    if (result.isNotEmpty) return mapModel(result.first);
+    return null;
   }
 
   Future<int> insert(T model) {
