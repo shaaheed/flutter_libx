@@ -41,7 +41,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     } else {
       whereClause = buildWhere('get', arguments);
     }
-    whereClause ??= WhereBuilder.column('id').eq(arguments);
+    whereClause ??= Where.col('id').eq(arguments);
     String newSql = "${getSql(arguments)} ${whereClause.sql} limit 1";
     final result = await getDatabase().rawQuery(newSql, whereClause.args);
     return mapModel(result.first);
@@ -99,8 +99,8 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
-  void prepareColumnsAndValues(List<Column> list, List<String> columns,
-      List<dynamic> values, bool Function(Column c) fn) {
+  void prepareColumnsAndValues(List<SqlColumn> list, List<String> columns,
+      List<dynamic> values, bool Function(SqlColumn c) fn) {
     for (final c in list) {
       if (fn(c)) {
         columns.add(c.getName());

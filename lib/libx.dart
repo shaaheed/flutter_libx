@@ -12,3 +12,4 @@ export 'either.dart';
 export 'key_value.dart';
 export 'object_factory.dart';
 export 'utils.dart';
+export 'data/data.dart';

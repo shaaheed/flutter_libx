@@ -2,12 +2,12 @@ import 'package:libx/data/sql/column.dart';
 
 class Table implements ITable {
   final String _name;
-  final List<Column> _columns = [];
+  final List<SqlColumn> _columns = [];
 
   Table(this._name);
 
-  Column column(String name) {
-    Column column = Column(name);
+  SqlColumn column(String name) {
+    SqlColumn column = SqlColumn(name);
     _columns.add(column);
     return column;
   }
@@ -16,11 +16,11 @@ class Table implements ITable {
   String getName() => _name;
 
   @override
-  List<Column> getColumns() => _columns;
+  List<SqlColumn> getColumns() => _columns;
 }
 
 abstract class ITable {
   String getName();
 
-  List<Column> getColumns();
+  List<SqlColumn> getColumns();
 }

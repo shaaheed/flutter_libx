@@ -90,17 +90,17 @@ abstract class InsertOrUpdateSql extends SqlCommand {
   List<Object> get _arguments => _keyValues.values.toList();
 }
 
-abstract class Where {
+abstract class WhereX {
   late String _whereKey;
   late String? _whereValue;
 
-  Where where(String key, Object? value) {
+  WhereX where(String key, Object? value) {
     _whereKey = key;
     _whereValue = value!.toString();
     return this;
   }
 
-  Where(String key) {
+  WhereX(String key) {
     _whereKey = key;
   }
 

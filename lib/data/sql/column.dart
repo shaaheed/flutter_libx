@@ -1,7 +1,7 @@
 import 'package:libx/data/sql/sql_type.dart';
 import 'package:libx/data/sql/foreign_key.dart';
 
-class Column {
+class SqlColumn {
   final String _name;
   late dynamic Function() _value;
 
@@ -10,19 +10,19 @@ class Column {
   late bool _insertable = false;
   late bool _updatable = false;
 
-  Column(this._name);
+  SqlColumn(this._name);
 
-  Column value(dynamic Function() _value) {
+  SqlColumn value(dynamic Function() _value) {
     this._value = _value;
     return this;
   }
 
-  Column insertable() {
+  SqlColumn insertable() {
     _insertable = true;
     return this;
   }
 
-  Column updatable() {
+  SqlColumn updatable() {
     _updatable = true;
     return this;
   }

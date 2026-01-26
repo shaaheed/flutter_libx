@@ -1,30 +1,33 @@
 class WhereClause {
-  final String sql;
-  final List<dynamic>? args;
+  final String _sql;
+  final List<dynamic>? _args;
 
-  const WhereClause(this.sql, [this.args = const []]);
+  const WhereClause(this._sql, [this._args = const []]);
 
   WhereClause and(WhereClause other) =>
-      WhereClause('($sql AND ${other.sql})', [...args!, ...other.args!]);
+      WhereClause('($_sql AND ${other._sql})', [..._args!, ...other._args!]);
 
   WhereClause or(WhereClause other) =>
-      WhereClause('($sql OR ${other.sql})', [...args!, ...other.args!]);
+      WhereClause('($_sql OR ${other._sql})', [..._args!, ...other._args!]);
 
-  WhereClause not() => WhereClause('(NOT $sql)', args);
+  WhereClause not() => WhereClause('(NOT $_sql)', _args);
+
+  String get sql => 'WHERE $_sql';
+
+  List<dynamic>? get args => _args;
 }
 
-class WhereBuilder {
-  static WhereColumn column(String name) =>
-      WhereColumn(name);
+class Where {
+  static WhereColumn col(String name) => WhereColumn(name);
 }
 
 class WhereColumn {
   final String name;
   const WhereColumn(this.name);
 
-  WhereClause eq(Object? value) => WhereClause('$name = ?', [value]);
+  WhereClause eq(dynamic value) => WhereClause('$name = ?', [value]);
 
-  WhereClause ne(Object? value) => WhereClause('$name != ?', [value]);
+  WhereClause ne(dynamic value) => WhereClause('$name != ?', [value]);
 
   WhereClause gt(num value) => WhereClause('$name > ?', [value]);
 
@@ -40,7 +43,7 @@ class WhereColumn {
 
   WhereClause isNotNull() => WhereClause('$name IS NOT NULL');
 
-  WhereClause includes(List<Object?> values) {
+  WhereClause includes(List<dynamic> values) {
     final placeholders = List.filled(values.length, '?').join(', ');
     return WhereClause('$name IN ($placeholders)', values);
   }
