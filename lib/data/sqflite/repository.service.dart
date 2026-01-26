@@ -39,7 +39,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     } else {
       whereClause = buildWhere('get', arguments);
     }
-    whereClause ??= Where.col('id').eq(arguments);
+    whereClause ??= Where.col('$prefix.id').eq(arguments);
     String newSql = "${getSql(arguments)} ${whereClause.sql} limit 1";
     final result = await getDatabase().rawQuery(newSql, whereClause.args);
     return mapModel(result.first);
