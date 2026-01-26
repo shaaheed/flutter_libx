@@ -92,7 +92,7 @@ abstract class SqfliteRepoService<T extends Model<T>> {
     }
     List<dynamic> args = where?.args ?? [];
     String whereStr = where?.sql ?? "";
-    String sql = 'select count($prefix.*) from "$table" $prefix $whereStr';
+    String sql = 'select count(*) from "$table" $prefix $whereStr';
     final result = await getDatabase().rawQuery(sql, args);
     return Sqflite.firstIntValue(result) ?? 0;
   }
